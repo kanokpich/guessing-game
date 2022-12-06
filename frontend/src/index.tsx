@@ -1,19 +1,33 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import React, { useEffect } from "react";
+import { createRoot } from "react-dom/client";
+import "./index.css";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 
-const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
-);
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+import LoginPage from "./pages/LoginPage";
+import GuessingPage from "./pages/GuessingPage";
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+function Index() {
+  const basename = document.querySelector("base")?.getAttribute("href") ?? "/";
+
+  //TODO check token
+  useEffect(() => {}, []);
+
+  return (
+    <div className="flex flex-col relative bg-base-200 min-h-screen">
+      <div className="navbar bg-primary">
+        <a className="btn btn-ghost normal-case text-xl text-base-100">
+          Guessing Game
+        </a>
+      </div>
+      <BrowserRouter basename={basename}>
+        <Routes>
+          <Route path="/" element={<LoginPage />}></Route>
+          <Route path="/guessing" element={<GuessingPage />}></Route>
+        </Routes>
+      </BrowserRouter>
+    </div>
+  );
+}
+
+const root = createRoot(document.getElementById("root")!);
+root.render(<Index />);
