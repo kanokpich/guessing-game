@@ -1,19 +1,41 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import apiClient from "../axios/apiClient";
+import { UserStatus } from "../types";
+import { UserContext } from "../UserContext";
 
 function LoginPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
+  const [userState, setUserState] = useContext(UserContext);
+
   const navigate = useNavigate();
 
   //TODO call login API then navigate to guessing page
   async function onLoginSubmit() {
-    console.log(username);
-    console.log(password);
-    navigate("/guessing");
+    const submitBody = {
+      username: username,
+      password: password,
+    };
+    await apiClient
+      .post("http://localhost:8080/login", submitBody)
+      .then((response) => {
+        console.log(response.data.token);
+        const token = response.data.token;
+
+        localStorage.setItem("token", token);
+        setUserState(UserStatus.LOGGEDIN);
+
+        alert("Login successfully");
+        navigate("/guessing");
+      })
+      .catch((err) => {
+        console.log(err.response);
+        alert("Login Failed");
+        navigate(0);
+      });
   }
 
   return (

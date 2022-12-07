@@ -67,6 +67,8 @@ func loginUser(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
 			"token": ss,
 		})
+	} else {
+		c.JSON(http.StatusBadRequest, "No password")
 	}
 
 }
@@ -97,15 +99,32 @@ func guessNumber(c *gin.Context) {
 		c.JSON(http.StatusCreated, "Guess correct")
 		randomNumber = rand.Intn(100)
 	} else {
-		c.JSON(http.StatusBadRequest, "Wrong Answer")
+		c.JSON(http.StatusOK, "Wrong Answer")
+	}
+}
+
+func CORS() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.Writer.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
+		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
+		c.Writer.Header().Set("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, Authorization")
+		c.Writer.Header().Set("Access-Control-Allow-Methods", "GET, HEAD, POST, PUT, DELETE, OPTIONS, PATCH")
+
+		if c.Request.Method == "OPTIONS" {
+			c.AbortWithStatus(204)
+			return
+		}
+
+		c.Next()
 	}
 }
 
 func main() {
 	router := gin.Default()
+	router.Use(CORS())
 	router.GET("/number", getNumber)
 	router.POST("/login", loginUser)
 	router.POST("/guess", guessNumber)
 
-	router.Run("localhost:8000")
+	router.Run("localhost:8080")
 }
