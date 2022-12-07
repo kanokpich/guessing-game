@@ -15,19 +15,18 @@ function GuessingPage() {
     /*
      *  If the users don't have right to access this page, navigate to home page.
      */
-    console.log(userState);
     if (userState === UserStatus.UNAUTHENTICATED) {
       navigate("/");
+    } else {
+      getNumber();
     }
   }, [userState]);
 
   //TODO call guess API then reset page
   async function onGuessSubmit() {
-    const token = localStorage.getItem("token");
     const SubmitBody = {
       GuessedNumber: number,
     };
-    console.log(token);
     await apiClient
       .post("http://localhost:8080/guess", SubmitBody)
       .then((response) => {
@@ -38,6 +37,14 @@ function GuessingPage() {
           alert("Wrong answer");
         }
       });
+  }
+
+  async function getNumber() {
+    await apiClient.get("http://localhost:8080/number").then((response) => {
+      if (response.status === 200) {
+        console.log(response.data.randomNumber);
+      }
+    });
   }
 
   return (

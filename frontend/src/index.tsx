@@ -32,7 +32,6 @@ function Index() {
       const tokenPayload: { exp: number; iss: string } = JSON.parse(
         atob(token.split(".")[1])
       );
-      console.log(JSON.parse(atob(token.split(".")[1])));
       if (tokenPayload.exp * 1000 < Date.now()) {
         localStorage.removeItem("token");
         setUserStateAndRef(UserStatus.UNAUTHENTICATED);

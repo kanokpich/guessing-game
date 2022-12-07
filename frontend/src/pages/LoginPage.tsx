@@ -22,7 +22,6 @@ function LoginPage() {
     await apiClient
       .post("http://localhost:8080/login", submitBody)
       .then((response) => {
-        console.log(response.data.token);
         const token = response.data.token;
 
         localStorage.setItem("token", token);
